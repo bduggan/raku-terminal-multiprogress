@@ -326,9 +326,26 @@ slow and steady
 =end output
 
 And how long will it take for all this exciting modules
-to be installed?
+to be installed? L<eg/installer.raku>
 
+=begin output
 
+installing 67 packages
+⠧ 00:00:08 left-pad               =====[28%]
+⠙ 00:00:08 middle-pad             ===================[98%]
+⠇ 00:00:08 no-pad                 =================[88%]
+⠦ 00:00:08 double-pad             =================[88%]
+⠋ 00:00:08 is-even                =======[38%]
+⠼ 00:00:03 is-odd-ish
+⠏ 00:00:00 indent
+⠴ 00:00:00 dedent
+(109) completed: 3   running: 8
+
+=end output
+
+Note that the examples above demonstrate a fixed number of items (2)
+and a variable number; the latter maintains a fixed scroll window and
+completed items are removed.
 
 =head1 DESCRIPTION
 

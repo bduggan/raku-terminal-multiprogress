@@ -325,7 +325,7 @@ slow and steady
 
 =end output
 
-And how long will it take for all this exciting modules
+And how long will it take for all these exciting modules
 to be installed? L<eg/installer.raku>
 
 =begin output

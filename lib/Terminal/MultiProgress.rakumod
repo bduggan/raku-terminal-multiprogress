@@ -359,33 +359,36 @@ There is also an C<update> option for managing updates -- this
 receives a object with enough context to generate a status
 line that will be updated in place for that identifier.
 
+The list of attributes below can be passed to constructor
+and affect the appearance and behavior of the widget.
+
 =head1 ATTRIBUTES
+
+=item C<show-title> -- draw the C<title> above the entries?
 
 =item C<title> -- heading shown when C<show-title> is set
 
+=item C<show-frame> -- draw a ruler above and below the entries?
+
 =item C<rule-width> -- width in columns of the C<show-frame> rule lines
 
-=item C<tick> -- seconds between redraws of running entries
+=item C<show-summary> -- draw a completed/running count below the entries?
+
+=item C<summary-line> -- C<sub (:$completed, :$running, :$visible, :$tick)> returning the text for the summary row
+
+=item C<full-screen> -- take over the whole terminal instead of drawing below the cursor?
+
+=item C<max-rows> -- limit on visible entries; older ones scroll off when exceeded
 
 =item C<running-color> -- default text color for entries that are still running
 
 =item C<finished-color> -- default text color for entries that have finished
 
-=item C<trap-sigint> -- stop C<run> cleanly on SIGINT
+=item C<tick> -- seconds between redraws of running entries
 
-=item C<full-screen> -- take over the whole terminal instead of drawing below the cursor
+=item C<trap-sigint> -- stop C<run> cleanly on SIGINT? (default true)
 
-=item C<show-title> -- draw the C<title> above the entries
-
-=item C<show-frame> -- draw a rule above and below the entries
-
-=item C<show-summary> -- draw a completed/running count below the entries
-
-=item C<max-rows> -- cap on visible entries; older ones scroll off when exceeded
-
-=item C<clear-finished> -- remove an entry's row once it finishes, closing the gap
-
-=item C<summary-line> -- C<sub (:$completed, :$running, :$visible, :$tick)> returning the text for the summary row
+=item C<clear-finished> -- remove an entry's row once it finishes?
 
 =item C<update> -- C<sub (Terminal::MultiProgress::Update)> returning the text for an entry's row.  See UPDATES below.
 

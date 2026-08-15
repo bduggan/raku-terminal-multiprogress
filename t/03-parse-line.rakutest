@@ -1,0 +1,20 @@
+#!raku
+
+use Test;
+use lib $?FILE.IO.parent.add('lib');
+use Terminal::MultiProgress::Event;
+use TestParse;
+
+plan 5;
+
+my $ev = parse-line('2026-08-13T19:00:12Z alpha start');
+is $ev.identifier, 'alpha', 'id from a log line';
+is $ev.status, Terminal::MultiProgress::Event::Status::Started, 'start status';
+is $ev.timestamp, DateTime.new('2026-08-13T19:00:12Z'), 'timestamp from the line';
+
+is parse-line('beta finish').status,
+  Terminal::MultiProgress::Event::Status::Finished, 'finish status';
+
+is parse-line('this line is not an event'), Nil, 'noise is not an event';
+
+done-testing;

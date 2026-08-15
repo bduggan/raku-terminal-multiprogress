@@ -1,0 +1,45 @@
+#!raku
+
+use Test;
+use lib $?FILE.IO.parent.add('lib');
+use Terminal::MultiProgress;
+use TestOut;
+
+plan 7;
+
+# hash events, default renderer
+my $events = supply {
+  emit %( :id<hare>,     :status<start>,  timestamp => now );
+  emit %( :id<tortoise>, :status<start>,  timestamp => now );
+  emit %( :id<hare>,     :status<finish>, timestamp => now );
+}
+my $out = capture-run {
+  Terminal::MultiProgress.new(
+    title => 'jobs', tick => 30, :show-title, :show-frame, :show-summary,
+  ).run: $events;
+}
+
+ok $out.defined, 'run() exits once the events supply is done';
+like $out, /'jobs'/, 'title is drawn';
+like $out, /'hare' .* 'finished in ' \d\d ':' \d\d ':' \d\d/,
+  'a finished entry shows its duration';
+like $out, /'tortoise' .* '(elapsed ' \d\d ':' \d\d ':' \d\d ')'/,
+  'a running entry shows its elapsed time';
+like $out, /'completed: 1' \s+ 'running: 1'/, 'summary line counts the jobs';
+
+# a custom update callback owns the line
+$events = supply {
+  emit %( :id<hare>, :status<start>,  timestamp => now );
+  emit %( :id<hare>, :status<finish>, timestamp => now );
+}
+$out = capture-run {
+  Terminal::MultiProgress.new(
+    :!show-title, :!show-frame, :!show-summary, tick => 30,
+    update => -> $u { "<{$u.id}:{$u.finished ?? 'done' !! 'going'}>" },
+  ).run: $events;
+}
+
+like $out, /'<hare:going>'/, 'update callback draws the running line';
+like $out, /'<hare:done>'/, 'update callback sees finished';
+
+done-testing;

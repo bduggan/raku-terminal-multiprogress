@@ -1,0 +1,20 @@
+#!raku
+
+use Test;
+use Terminal::MultiProgress::Event;
+
+constant Event = Terminal::MultiProgress::Event;
+
+plan 5;
+
+my $ev = Event.create: %( :id<hare>, :status<start>, timestamp => now );
+is $ev.identifier, 'hare', 'id from a hash';
+is $ev.status, Event::Status::Started, 'start becomes Started';
+
+is Event.create(%( :id<hare>, :status<finish> )).status,
+  Event::Status::Finished, 'finish becomes Finished';
+
+dies-ok { Event.create(%( :id<hare>, :status<jump> )) }, 'unknown status dies';
+dies-ok { Event.create(%( :status<start> )) }, 'missing id dies';
+
+done-testing;

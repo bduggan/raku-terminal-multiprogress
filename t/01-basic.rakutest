@@ -1,0 +1,11 @@
+#!raku
+
+use Test;
+
+plan 3;
+
+use-ok 'Terminal::MultiProgress';
+use-ok 'Terminal::MultiProgress::Event';
+use-ok 'Terminal::MultiProgress::Update';
+
+done-testing;

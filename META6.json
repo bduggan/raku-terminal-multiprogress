@@ -1,0 +1,27 @@
+{
+  "name" : "Terminal::MultiProgress",
+  "authors" : [
+    "Brian Duggan"
+  ],
+  "provides" : {
+    "Terminal::MultiProgress" : "lib/Terminal/MultiProgress.rakumod",
+    "Terminal::MultiProgress::Event" : "lib/Terminal/MultiProgress/Event.rakumod",
+    "Terminal::MultiProgress::Update" : "lib/Terminal/MultiProgress/Update.rakumod"
+  },
+  "build-depends" : [ ],
+  "depends" : [
+    "Terminal::ANSI"
+  ],
+  "description" : "Show progress of multiple concurrent tasks in the terminal",
+  "tags" : [
+    "terminal",
+    "progress",
+    "ansi",
+    "console"
+  ],
+  "license" : "MIT",
+  "raku" : "6.*",
+  "version" : "0.0.1",
+  "auth" : "zef:bduggan",
+  "source-url" : "git://github.com/bduggan/raku-terminal-multiprogress.git"
+}

@@ -1,10 +1,6 @@
 [![Actions Status](https://github.com/bduggan/raku-terminal-multiprogress/actions/workflows/linux.yml/badge.svg)](https://github.com/bduggan/raku-terminal-multiprogress/actions/workflows/linux.yml)
 [![Actions Status](https://github.com/bduggan/raku-terminal-multiprogress/actions/workflows/macos.yml/badge.svg)](https://github.com/bduggan/raku-terminal-multiprogress/actions/workflows/macos.yml)
 
-### has Callable &.update
-
-Given a Terminal::MultiProgress::Update, return the line to draw for that id. Called on every event and on every tick; see !default-update.
-
 NAME
 ====
 

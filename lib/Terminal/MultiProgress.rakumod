@@ -29,8 +29,8 @@ has Sub  $.summary-line = sub (:$completed, :$running, :$visible, :$tick) {
   "   running: $running$vis", t.erase-to-end-of-line;
 }
 
-#| Given a Terminal::MultiProgress::Update, return the line to draw for that
-#| id.  Called on every event and on every tick; see !default-update.
+# Given a Terminal::MultiProgress::Update, return the line to draw for that
+# id.  Called on every event and on every tick; see !default-update.
 has &.update;
 
 has Int $!top;

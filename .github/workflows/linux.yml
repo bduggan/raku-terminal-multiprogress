@@ -16,6 +16,7 @@ jobs:
           - ubuntu-latest
         raku-version:
           - '2026.06'
+          - 'latest'
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v7

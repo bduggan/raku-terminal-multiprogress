@@ -10,7 +10,7 @@
   },
   "build-depends" : [ ],
   "depends" : [
-    "Terminal::ANSI"
+    "Terminal::ANSI", "Log::Async"
   ],
   "description" : "Show progress of multiple concurrent tasks in the terminal",
   "tags" : [

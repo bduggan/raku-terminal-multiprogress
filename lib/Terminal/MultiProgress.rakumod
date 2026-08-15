@@ -204,7 +204,7 @@ method run(Supply $events) {
   debug "starting run";
   # rows above the entries: an optional title, then an optional rule
   $!top      = 1 + ($!show-title ?? 1 !! 0) + ($!show-frame ?? 1 !! 0);
-  $!lines    = qx[tput lines].Int;
+  $!lines    = qx[tput lines].Int || 24;  # fall back when tput has no terminal to query (e.g. no $TERM)
   # full-screen fills the terminal; otherwise we only stop growing if asked to
   my $rows   = $!full-screen
     ?? (($!lines - $!top - ($!show-frame ?? 1 !! 0) - ($!show-summary ?? 1 !! 0)) max 5)

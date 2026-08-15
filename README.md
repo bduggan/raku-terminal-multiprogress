@@ -50,7 +50,7 @@ See below for how to control the output format, and for more interesting example
     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     slow and steady
 
-And how long will it take for all this exciting modules to be installed? [eg/installer.raku](eg/installer.raku)
+And how long will it take for all these exciting modules to be installed? [eg/installer.raku](eg/installer.raku)
 
     installing 67 packages
     ⠧ 00:00:08 left-pad               =====[28%]

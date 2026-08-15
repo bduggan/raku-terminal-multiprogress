@@ -365,13 +365,33 @@ line that will be updated in place for that identifier.
 
 =item C<summary-line> -- C<sub (:$completed, :$running, :$visible, :$tick)> returning the text for the summary row
 
-=item C<update> -- C<sub (Terminal::MultiProgress::Update)> returning the text for an entry's row
+=item C<update> -- C<sub (Terminal::MultiProgress::Update)> returning the text for an entry's row.  See UPDATES below.
 
 =head1 METHODS
 
 =item C<new> -- construct a widget; takes the attributes above as named arguments
 
-=item C<run(Supply $events)> -- consume events and draw until the supply is done.
+=item C<run(Supply $events)> -- consume events and draw until the supply is done.  See below
+for the format of events.
+
+=head1 EVENTS
+
+Events that are sent to C<run> can be either a hash or a C<Terminal::MultiProgress::Event> object.
+
+The object has C<timestamp> (DateTime), C<identifier> (Str) and C<status> (Status enum) attributes.
+The status enum is either Started or Finished.
+
+The hash can contain these keys which will autocreate an object.
+
+  * id/identifier -- the id for the event update
+  * timestamp -- when it was updated (default now)
+  * status -- a string containing start or finish/end
+
+=head1 UPDATES
+
+The update callback receives a C<Terminal::MultiProgress::Update> object which has
+an C<id>, C<elapsed> time (seconds), C<finished> for whether the status is finished,
+and C<last> which is the last line that was drawn for this item.
 
 =head1 EXAMPLES
 

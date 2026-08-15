@@ -18,7 +18,7 @@ sub distance($id, $t) {
 my &race = -> $u {
   my $d = $u.finished ?? TRACK !! distance($u.id, $u.elapsed);
   t.color(%color{$u.id})
-    ~ ('╌' x $d) ~ %icon{$u.id} ~ ('·' x (TRACK - $d)) ~ '🏁'
+    ~ ('-' x $d) ~ %icon{$u.id} ~ ('.' x (TRACK - $d)) ~ '🏁'
     ~ ($u.finished ?? "  {$u.timer}" !! '')
     ~ t.text-reset;
 }

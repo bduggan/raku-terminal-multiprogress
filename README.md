@@ -45,8 +45,8 @@ See below for how to control the output format, and for more interesting example
 
     hare vs tortoise
     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-    ╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌🐇··································🏁
-    ╌╌╌╌╌🐢·············································🏁
+    --------------🐇..................................🏁
+    -----🐢.............................................🏁
     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     slow and steady
 
@@ -84,14 +84,32 @@ ATTRIBUTES
 
   * `summary-line` -- `sub (:$completed, :$running, :$visible, :$tick)` returning the text for the summary row
 
-  * `update` -- `sub (Terminal::MultiProgress::Update)` returning the text for an entry's row
+  * `update` -- `sub (Terminal::MultiProgress::Update)` returning the text for an entry's row. See UPDATES below.
 
 METHODS
 =======
 
   * `new` -- construct a widget; takes the attributes above as named arguments
 
-  * `run(Supply $events)` -- consume events and draw until the supply is done.
+  * `run(Supply $events)` -- consume events and draw until the supply is done. See below for the format of events.
+
+EVENTS
+======
+
+Events that are sent to `run` can be either a hash or a `Terminal::MultiProgress::Event` object.
+
+The object has `timestamp` (DateTime), `identifier` (Str) and `status` (Status enum) attributes. The status enum is either Started or Finished.
+
+The hash can contain these keys which will autocreate an object.
+
+    * id/identifier -- the id for the event update
+    * timestamp -- when it was updated (default now)
+    * status -- a string containing start or finish/end
+
+UPDATES
+=======
+
+The update callback receives a `Terminal::MultiProgress::Update` object which has an `id`, `elapsed` time (seconds), `finished` for whether the status is finished, and `last` which is the last line that was drawn for this item.
 
 EXAMPLES
 ========

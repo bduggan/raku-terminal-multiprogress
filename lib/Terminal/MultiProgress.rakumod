@@ -325,6 +325,11 @@ slow and steady
 
 =end output
 
+And how long will it take for all this exciting modules
+to be installed?
+
+
+
 =head1 DESCRIPTION
 
 This module is for generating multiple progress bars on your

@@ -39,7 +39,7 @@ and ending with
     hare  started ... finished in 00:00:02
     tortoise  started ... finished in 00:00:03
 
-See below for how to control the output format, and for more interesting examples. Or download the examples in [eg/](eg/) and run them, e.g. who will win this one?
+See below for how to control the output format, and for more interesting examples. Or download the examples in [eg/](https://github.com/bduggan/raku-terminal-multiprogress/tree/main/eg) and run them, e.g. who will win this one?
 
     $ raku eg/race.raku
 
@@ -50,7 +50,7 @@ See below for how to control the output format, and for more interesting example
     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     slow and steady
 
-And how long will it take for all these exciting modules to be installed? [eg/installer.raku](eg/installer.raku)
+And how long will it take for all these exciting modules to be installed? [eg/installer.raku](https://github.com/bduggan/raku-terminal-multiprogress/blob/main/eg/installer.raku)
 
     installing 67 packages
     ⠧ 00:00:08 left-pad               =====[28%]
@@ -131,7 +131,7 @@ The update callback receives a `Terminal::MultiProgress::Update` object which ha
 EXAMPLES
 ========
 
-See the `eg/` directory for examples.
+See the [eg/](https://github.com/bduggan/raku-terminal-multiprogress/tree/main/eg) directory for examples.
 
 AUTHOR
 ======

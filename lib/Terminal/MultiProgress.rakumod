@@ -309,7 +309,8 @@ tortoise  started ... finished in 00:00:03
 =end output
 
 See below for how to control the output format, and for more
-interesting examples.  Or download the examples in L<eg/> and
+interesting examples.  Or download the examples in
+L<eg/|https://github.com/bduggan/raku-terminal-multiprogress/tree/main/eg> and
 run them, e.g. who will win this one?
 
 =begin output
@@ -326,7 +327,7 @@ slow and steady
 =end output
 
 And how long will it take for all these exciting modules
-to be installed? L<eg/installer.raku>
+to be installed? L<eg/installer.raku|https://github.com/bduggan/raku-terminal-multiprogress/blob/main/eg/installer.raku>
 
 =begin output
 
@@ -420,7 +421,7 @@ and C<last> which is the last line that was drawn for this item.
 
 =head1 EXAMPLES
 
-See the C<eg/> directory for examples.
+See the L<eg/|https://github.com/bduggan/raku-terminal-multiprogress/tree/main/eg> directory for examples.
 
 =head1 AUTHOR
 

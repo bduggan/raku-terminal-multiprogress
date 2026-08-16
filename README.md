@@ -61,6 +61,9 @@ And how long will it take for all these exciting modules to be installed? [eg/in
 
 DEMOS
 =====
+
+These demos can be found in the [eg/](https://github.com/bduggan/raku-terminal-multiprogress/tree/main/eg) directory.
+
 [![asciicast](https://asciinema.org/a/35pvtKbnJWHTM7ly.svg)](https://asciinema.org/a/35pvtKbnJWHTM7ly)
 
 DESCRIPTION

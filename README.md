@@ -66,6 +66,8 @@ These demos can be found in the [eg/](https://github.com/bduggan/raku-terminal-m
 
 [![asciicast](https://asciinema.org/a/35pvtKbnJWHTM7ly.svg)](https://asciinema.org/a/35pvtKbnJWHTM7ly)
 
+[![asciicast](https://asciinema.org/a/Q268tkAHkz2WnYZb.svg)](https://asciinema.org/a/Q268tkAHkz2WnYZb)
+
 DESCRIPTION
 ===========
 

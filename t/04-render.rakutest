@@ -21,9 +21,9 @@ my $out = capture-run {
 
 ok $out.defined, 'run() exits once the events supply is done';
 like $out, /'jobs'/, 'title is drawn';
-like $out, /'hare' .* 'finished in ' \d\d ':' \d\d ':' \d\d/,
+like $out, /'hare' .* '✓' \s+ \d\d ':' \d\d ':' \d\d/,
   'a finished entry shows its duration';
-like $out, /'tortoise' .* '(elapsed ' \d\d ':' \d\d ':' \d\d ')'/,
+like $out, /'tortoise' .* \d\d ':' \d\d ':' \d\d/,
   'a running entry shows its elapsed time';
 like $out, /'completed: 1' \s+ 'running: 1'/, 'summary line counts the jobs';
 

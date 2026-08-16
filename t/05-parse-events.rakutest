@@ -27,9 +27,9 @@ my $out = capture-run {
 }
 
 ok $out.defined, 'run() exits once the log is consumed';
-like $out, /'alpha' .* 'finished in 00:00:07'/, 'alpha shows its logged duration';
-like $out, /'bravo' .* 'finished in 00:00:04'/, 'bravo shows its logged duration';
-like $out, /'charlie' .* 'finished in 00:00:18'/, 'charlie shows its logged duration';
+like $out, /'alpha' .* '✓' \s+ '00:00:07'/, 'alpha shows its logged duration';
+like $out, /'bravo' .* '✓' \s+ '00:00:04'/, 'bravo shows its logged duration';
+like $out, /'charlie' .* '✓' \s+ '00:00:18'/, 'charlie shows its logged duration';
 like $out, /'completed: 3' \s+ 'running: 0'/, 'summary line: all jobs completed';
 unlike $out, /'worker pool'/, 'noise lines draw nothing';
 

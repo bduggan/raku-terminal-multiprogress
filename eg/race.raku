@@ -37,7 +37,7 @@ Terminal::MultiProgress.new(
   rule-width => TRACK + 4,
   tick       => 0.1,
   update     => &race,
-  :show-title, :!show-frame, :show-summary,
+  :show-title, :show-frame, :show-summary,
   summary-line => sub (:$completed, :$running, :$visible, :$tick) {
     $completed == 0 ?? "slow and steady" !! "wins the race   "
   }

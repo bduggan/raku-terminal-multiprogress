@@ -25,7 +25,7 @@ has Int  $.max-rows;             # at most this many entries on screen at once
 has Bool $.clear-finished = False;   # finished entries leave the display
 has Sub  $.summary-line = sub (:$completed, :$running, :$visible, :$tick) {
   my $vis = $visible == $running ?? "" !! " (visible: $visible)";
-  t.bold, "($tick) completed: $completed", t.text-reset,
+  t.bold, "completed: $completed", t.text-reset,
   "   running: $running$vis", t.erase-to-end-of-line;
 }
 

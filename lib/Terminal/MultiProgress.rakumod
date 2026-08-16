@@ -84,9 +84,9 @@ method !put(Int $row, *@parts) {
 
 # what we draw when no update callback was given
 method !default-update(Update $u) {
-  my $prefix = "{$u.id}  started";
+  my $prefix = "{$u.id} started";
   # same width whether running or finished, so the timer lands in the same column
-  my $label  = $u.finished ?? 'finished in' !! 'elapsed';
+  my $label  = $u.finished ?? '✓' !! '';
   my $suffix = sprintf '%11s %s', $label, $u.timer;
   # dots fill the gap as time passes; once they reach the fixed column where
   # the timer sits, padding takes over so the timer never moves
@@ -305,8 +305,8 @@ goes by.  Updates happen every second, starting with
 
 =begin output
 
-hare  started ... (elapsed 00:00:00)
-tortoise  started ... (elapsed 00:00:00)
+hare started ...                      00:00:00
+tortoise started ...                  00:00:00
 
 =end output
 
@@ -314,8 +314,8 @@ and ending with
 
 =begin output
 
-hare  started ... finished in 00:00:02
-tortoise  started ... finished in 00:00:03
+hare started ...... done            ✓ 00:00:02
+tortoise started ............ done  ✓ 00:00:03
 
 =end output
 

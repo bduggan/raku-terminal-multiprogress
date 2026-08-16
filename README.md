@@ -31,13 +31,13 @@ $prog.run: $events
 
 Output will be status lines that are updated as time goes by. Updates happen every second, starting with
 
-    hare  started ... (elapsed 00:00:00)
-    tortoise  started ... (elapsed 00:00:00)
+    hare started ...                      00:00:00
+    tortoise started ...                  00:00:00
 
 and ending with 
 
-    hare  started ... finished in 00:00:02
-    tortoise  started ... finished in 00:00:03
+    hare started ...... done            ✓ 00:00:02
+    tortoise started ............ done  ✓ 00:00:03
 
 See below for how to control the output format, and for more interesting examples. Or download the examples in [eg/](https://github.com/bduggan/raku-terminal-multiprogress/tree/main/eg) and run them. e.g. Who will win this race? (these are custom progress bars)
 

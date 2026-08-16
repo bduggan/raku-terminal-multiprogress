@@ -43,12 +43,8 @@ See below for how to control the output format, and for more interesting example
 
     $ raku eg/race.raku
 
-    hare vs tortoise
-    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     --------------🐇....................................🏁
     -----🐢.............................................🏁
-    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-    slow and steady
 
 And how long will it take for all these exciting modules to be installed? [eg/installer.raku](https://github.com/bduggan/raku-terminal-multiprogress/blob/main/eg/installer.raku)
 

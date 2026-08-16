@@ -3,9 +3,9 @@ use Terminal::MultiProgress;
 my $events = supply {
    emit %( :id<hare>,     :status<start> );
    emit %( :id<tortoise>, :status<start> );
-   sleep 2;
+   sleep 5;
    emit %( :id<hare>,     :status<finish> );
-   sleep 1;
+   sleep 10;
    emit %( :id<tortoise>, :status<finish> );
 }
 

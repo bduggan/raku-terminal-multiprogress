@@ -14,8 +14,8 @@ constant Update = Terminal::MultiProgress::Update;
 has Str  $.title     = 'progress';
 has Int  $.rule-width  = 40;
 has Real $.tick    = 1;
-has Str  $.running-color  = '#aabbaa';
-has Str  $.finished-color = '#339933';
+has Str  $.running-color  = '#e2ca76'; # sand (xkcd)
+has Str  $.finished-color = '#789b73'; # grey green (xkcd)
 has Bool $.trap-sigint = True;
 has Bool $.full-screen = False;
 has Bool $.show-title  = False;
@@ -376,9 +376,9 @@ and affect the appearance and behavior of the widget.
 
 =item C<max-rows> -- limit on visible entries; older ones scroll off when exceeded
 
-=item C<running-color> -- default text color for entries that are still running
+=item C<running-color> -- default text color for entries that are still running (default: xkcd "sand", C<#e2ca76>)
 
-=item C<finished-color> -- default text color for entries that have finished
+=item C<finished-color> -- default text color for entries that have finished (default: xkcd "grey green", C<#789b73>)
 
 =item C<tick> -- seconds between redraws of running entries
 

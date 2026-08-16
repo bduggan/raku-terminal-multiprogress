@@ -85,9 +85,9 @@ ATTRIBUTES
 
   * `max-rows` -- limit on visible entries; older ones scroll off when exceeded
 
-  * `running-color` -- default text color for entries that are still running
+  * `running-color` -- default text color for entries that are still running (default: xkcd "sand", `#e2ca76`)
 
-  * `finished-color` -- default text color for entries that have finished
+  * `finished-color` -- default text color for entries that have finished (default: xkcd "grey green", `#789b73`)
 
   * `tick` -- seconds between redraws of running entries
 

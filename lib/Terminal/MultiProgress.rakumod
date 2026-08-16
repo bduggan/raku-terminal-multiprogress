@@ -289,9 +289,9 @@ my $prog = Terminal::MultiProgress.new: title => 'race';
 my $events = supply {
    emit %( :id<hare>,     :status<started> );
    emit %( :id<tortoise>, :status<started> );
-   sleep 2;
+   sleep 5;
    emit %( :id<hare>,     :status<finished> );
-   sleep 1;
+   sleep 10;
    emit %( :id<tortoise>, :status<finished> );
 }
 

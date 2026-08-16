@@ -59,6 +59,10 @@ And how long will it take for all these exciting modules to be installed? [eg/in
     ⠴ 00:00:00 dedent
     (109) completed: 3   running: 8
 
+DEMOS
+=====
+[![asciicast](https://asciinema.org/a/35pvtKbnJWHTM7ly.svg)](https://asciinema.org/a/35pvtKbnJWHTM7ly)
+
 DESCRIPTION
 ===========
 

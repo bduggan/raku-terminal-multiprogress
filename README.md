@@ -39,14 +39,14 @@ and ending with
     hare  started ... finished in 00:00:02
     tortoise  started ... finished in 00:00:03
 
-See below for how to control the output format, and for more interesting examples. Or download the examples in [eg/](https://github.com/bduggan/raku-terminal-multiprogress/tree/main/eg) and run them, e.g. who will win this one?
+See below for how to control the output format, and for more interesting examples. Or download the examples in [eg/](https://github.com/bduggan/raku-terminal-multiprogress/tree/main/eg) and run them. e.g. Who will win this race? (these are custom progress bars)
 
     $ raku eg/race.raku
 
     --------------🐇....................................🏁
     -----🐢.............................................🏁
 
-And how long will it take for all these exciting modules to be installed? [eg/installer.raku](https://github.com/bduggan/raku-terminal-multiprogress/blob/main/eg/installer.raku)
+And how long will it take for all these exciting modules to be installed? [eg/installer.raku](https://github.com/bduggan/raku-terminal-multiprogress/blob/main/eg/installer.raku) has a set of multiple events in progress being monitored in a fixed scroll region, with completed events being pruned.
 
     installing 67 packages
     ⠧ 00:00:08 left-pad               =====[28%]
@@ -58,8 +58,6 @@ And how long will it take for all these exciting modules to be installed? [eg/in
     ⠏ 00:00:00 indent
     ⠴ 00:00:00 dedent
     (109) completed: 3   running: 8
-
-Note that the examples above demonstrate a fixed number of items (2) and a variable number; the latter maintains a fixed scroll window and completed items are removed.
 
 DESCRIPTION
 ===========

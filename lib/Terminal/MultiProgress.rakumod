@@ -311,7 +311,8 @@ tortoise  started ... finished in 00:00:03
 See below for how to control the output format, and for more
 interesting examples.  Or download the examples in
 L<eg/|https://github.com/bduggan/raku-terminal-multiprogress/tree/main/eg> and
-run them, e.g. who will win this one?
+run them. e.g. Who will win this race?  (these are custom
+progress bars)
 
 =begin output
 
@@ -323,7 +324,9 @@ $ raku eg/race.raku
 =end output
 
 And how long will it take for all these exciting modules
-to be installed? L<eg/installer.raku|https://github.com/bduggan/raku-terminal-multiprogress/blob/main/eg/installer.raku>
+to be installed? L<eg/installer.raku|https://github.com/bduggan/raku-terminal-multiprogress/blob/main/eg/installer.raku> has a set of multiple events in
+progress being monitored in a fixed scroll region, with
+completed events being pruned.
 
 =begin output
 
@@ -339,10 +342,6 @@ installing 67 packages
 (109) completed: 3   running: 8
 
 =end output
-
-Note that the examples above demonstrate a fixed number of items (2)
-and a variable number; the latter maintains a fixed scroll window and
-completed items are removed.
 
 =head1 DESCRIPTION
 

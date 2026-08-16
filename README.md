@@ -19,14 +19,16 @@ my $prog = Terminal::MultiProgress.new: title => 'race';
 my $events = supply {
    emit %( :id<hare>,     :status<started> );
    emit %( :id<tortoise>, :status<started> );
-   sleep 2;
+   sleep 5;
    emit %( :id<hare>,     :status<finished> );
-   sleep 1;
+   sleep 10;
    emit %( :id<tortoise>, :status<finished> );
 }
 
 # Use run to send the output to the terminal (blocks until it finishes)
 $prog.run: $events
+
+![simple progress bars](docs/simple.gif)
 ```
 
 Output will be status lines that are updated as time goes by. Updates happen every second, starting with
@@ -46,6 +48,8 @@ See below for how to control the output format, and for more interesting example
     --------------🐇....................................🏁
     -----🐢.............................................🏁
 
+![race](docs/race.gif)
+
 And how long will it take for all these exciting modules to be installed? [eg/installer.raku](https://github.com/bduggan/raku-terminal-multiprogress/blob/main/eg/installer.raku) has a set of multiple events in progress being monitored in a fixed scroll region, with completed events being pruned.
 
     installing 67 packages
@@ -59,18 +63,11 @@ And how long will it take for all these exciting modules to be installed? [eg/in
     ⠴ 00:00:00 dedent
     (109) completed: 3   running: 8
 
-DEMOS
-=====
+![race](docs/installer.gif)
 
-These demos can be found in the [eg/](https://github.com/bduggan/raku-terminal-multiprogress/tree/main/eg) directory.
+And let us watch this amazing LLM in action doing so many unfathomable things
 
-[![asciicast](https://asciinema.org/a/35pvtKbnJWHTM7ly.svg)](https://asciinema.org/a/35pvtKbnJWHTM7ly)
-
-[![asciicast](https://asciinema.org/a/Q268tkAHkz2WnYZb.svg)](https://asciinema.org/a/Q268tkAHkz2WnYZb)
-
-[![asciicast](https://asciinema.org/a/CrLeUXqTO1c6hpHW.svg)](https://asciinema.org/a/CrLeUXqTO1c6hpHW)
-
-[![asciicast](https://asciinema.org/a/LflZqV7Bq7JrVhdi.svg)](https://asciinema.org/a/LflZqV7Bq7JrVhdi)
+![llm](docs/llm.gif)
 
 DESCRIPTION
 ===========

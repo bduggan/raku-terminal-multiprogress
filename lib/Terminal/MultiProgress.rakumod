@@ -298,6 +298,8 @@ my $events = supply {
 # Use run to send the output to the terminal (blocks until it finishes)
 $prog.run: $events
 
+![simple progress bars](docs/simple.gif)
+
 =end code
 
 Output will be status lines that are updated as time
@@ -334,6 +336,8 @@ $ raku eg/race.raku
 
 =end output
 
+![race](docs/race.gif)
+
 And how long will it take for all these exciting modules
 to be installed? L<eg/installer.raku|https://github.com/bduggan/raku-terminal-multiprogress/blob/main/eg/installer.raku> has a set of multiple events in
 progress being monitored in a fixed scroll region, with
@@ -353,6 +357,12 @@ installing 67 packages
 (109) completed: 3   running: 8
 
 =end output
+
+![race](docs/installer.gif)
+
+And let us watch this amazing LLM in action doing so many unfathomable things
+
+![llm](docs/llm.gif)
 
 =head1 DESCRIPTION
 

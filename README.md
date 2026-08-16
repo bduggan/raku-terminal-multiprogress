@@ -27,9 +27,9 @@ my $events = supply {
 
 # Use run to send the output to the terminal (blocks until it finishes)
 $prog.run: $events
+```
 
 ![simple progress bars](docs/simple.gif)
-```
 
 Output will be status lines that are updated as time goes by. Updates happen every second, starting with
 

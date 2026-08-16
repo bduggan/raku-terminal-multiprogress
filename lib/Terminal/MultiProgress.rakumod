@@ -38,6 +38,7 @@ has Int $!height;
 has     $!bottom;   # last entry row, or Inf when we can just keep growing
 has Int $!col = 1;
 has Int $!lines;    # terminal height
+has Int $!cols;     # terminal width
 has Int $!nlines;   # lines we own, below the cursor's starting line (non-full-screen)
 
 has %!row-of;    # id -> screen row
@@ -83,9 +84,18 @@ method !put(Int $row, *@parts) {
 
 # what we draw when no update callback was given
 method !default-update(Update $u) {
+  my $prefix = "{$u.id}  started";
+  # same width whether running or finished, so the timer lands in the same column
+  my $label  = $u.finished ?? 'finished in' !! 'elapsed';
+  my $suffix = sprintf '%11s %s', $label, $u.timer;
+  # dots fill the gap as time passes; once they reach the fixed column where
+  # the timer sits, padding takes over so the timer never moves
+  my constant $right-margin = 2;
+  my $avail = (($!cols || 80) - ($!col - 1) - $right-margin - $prefix.chars - 1 - $suffix.chars) max 0;
+  my $ndots = (1 + $u.elapsed.Int) min $avail;
+  my $done = $u.finished ?? 'done' !! '';
   ($u.finished ?? t.color($!finished-color) !! t.color($!running-color))
-  ~ ($u.finished ?? "{$u.id}  started ... finished in {$u.timer}"
-                 !! "{$u.id}  started ... (elapsed {$u.timer})")
+  ~ $prefix ~ ('.' x $ndots) ~ $done ~ (' ' x ($avail - $ndots - $done.chars)) ~ " $suffix"
   ~ t.text-reset;
 }
 
@@ -205,6 +215,7 @@ method run(Supply $events) {
   # rows above the entries: an optional title, then an optional rule
   $!top      = 1 + ($!show-title ?? 1 !! 0) + ($!show-frame ?? 1 !! 0);
   $!lines    = qx[tput lines].Int || 24;  # fall back when tput has no terminal to query (e.g. no $TERM)
+  $!cols     = qx[tput cols].Int  || 80;
   # full-screen fills the terminal; otherwise we only stop growing if asked to
   my $rows   = $!full-screen
     ?? (($!lines - $!top - ($!show-frame ?? 1 !! 0) - ($!show-summary ?? 1 !! 0)) max 5)

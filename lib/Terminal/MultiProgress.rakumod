@@ -94,9 +94,18 @@ method !default-update(Update $u) {
   my $avail = (($!cols || 80) - ($!col - 1) - $right-margin - $prefix.chars - 1 - $suffix.chars) max 0;
   my $done = $u.finished ?? 'done' !! '';
   # dots + done + padding must sum to exactly $avail, so leave room for "done"
-  my $ndots = ((1 + $u.elapsed.Int) min ($avail - $done.chars)) max 0;
+  my $max-dots = ($avail - $done.chars) max 0;
+  my $ndots = ((1 + $u.elapsed.Int) min $max-dots) max 0;
+  # once the dots fill the gap but we're still going, there's no more room to
+  # grow -- so cycle the final dot through some ellipses to keep showing activity
+  my $dots = '.' x $ndots;
+  if !$u.finished && $ndots > 0 && $ndots == $max-dots {
+    my @spin = '…', '⋯';
+    $dots = ('.' x ($ndots - 1)) ~ @spin[$u.elapsed.Int % @spin];
+
+  }
   ($u.finished ?? t.color($!finished-color) !! t.color($!running-color))
-  ~ $prefix ~ ('.' x $ndots) ~ $done ~ (' ' x ($avail - $ndots - $done.chars)) ~ " $suffix"
+  ~ $prefix ~ $dots ~ $done ~ (' ' x ($avail - $ndots - $done.chars)) ~ " $suffix"
   ~ t.text-reset;
 }
 

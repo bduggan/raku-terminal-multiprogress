@@ -16,6 +16,8 @@ has Int  $.rule-width  = 40;
 has Real $.tick    = 1;
 has Str  $.running-color  = '#e2ca76'; # sand (xkcd)
 has Str  $.finished-color = '#789b73'; # grey green (xkcd)
+# colors the trailing dots cycle through to show activity while running
+has Str  @.spinner-colors = <#e2ca76 #d19a66 #a86f3c>;
 has Bool $.trap-sigint = True;
 has Bool $.full-screen = False;
 has Bool $.show-title  = False;
@@ -96,15 +98,25 @@ method !default-update(Update $u) {
   # dots + done + padding must sum to exactly $avail, so leave room for "done"
   my $max-dots = ($avail - $done.chars) max 0;
   my $ndots = ((1 + $u.elapsed.Int) min $max-dots) max 0;
-  # once the dots fill the gap but we're still going, there's no more room to
-  # grow -- so cycle the final dot through some ellipses to keep showing activity
-  my $dots = '.' x $ndots;
-  if !$u.finished && $ndots > 0 && $ndots == $max-dots {
-    my @spin = '…', '⋯';
-    $dots = ('.' x ($ndots - 1)) ~ @spin[$u.elapsed.Int % @spin];
-
+  my $base  = $u.finished ?? t.color($!finished-color) !! t.color($!running-color);
+  # the trailing dots cycle colors to show activity: the last three dots each
+  # advance one step through @!spinner-colors on every tick, then we reset to
+  # the base color so the timer/padding keep the normal running color
+  my $dots;
+  if !$u.finished && $ndots > 0 && @!spinner-colors {
+    my $lit  = $ndots min 3;              # how many trailing dots get colored
+    my $step = $u.elapsed.Int;
+    $dots = '.' x ($ndots - $lit);
+    for ^$lit -> $i {
+      my $c = @!spinner-colors[($step + $i) % @!spinner-colors.elems];
+      $dots ~= t.color($c) ~ '.';
+    }
+    $dots ~= $base;                       # back to the running color for what follows
   }
-  ($u.finished ?? t.color($!finished-color) !! t.color($!running-color))
+  else {
+    $dots = '.' x $ndots;
+  }
+  $base
   ~ $prefix ~ $dots ~ $done ~ (' ' x ($avail - $ndots - $done.chars)) ~ " $suffix"
   ~ t.text-reset;
 }
@@ -414,6 +426,8 @@ and affect the appearance and behavior of the widget.
 =item C<running-color> -- default text color for entries that are still running (default: xkcd "sand", C<#e2ca76>)
 
 =item C<finished-color> -- default text color for entries that have finished (default: xkcd "grey green", C<#789b73>)
+
+=item C<spinner-colors> -- list of hex colors the trailing dots cycle through to show activity while running (default: C<#e2ca76 #d19a66 #a86f3c>)
 
 =item C<tick> -- seconds between redraws of running entries
 

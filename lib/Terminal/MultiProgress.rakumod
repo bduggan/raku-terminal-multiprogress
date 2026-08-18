@@ -3,7 +3,7 @@ use Terminal::ANSI;
 use Log::Async;
 
 logger.untapped-ok = True;
-logger.send-to: '/tmp/debug.log' if $*ENV<TMPROG_DEBUG>;
+logger.send-to('/tmp/debug.log') if %*ENV<TMPROG_DEBUG>;
 
 unit class Terminal::MultiProgress;
 use Terminal::MultiProgress::Event;
@@ -90,10 +90,11 @@ method !default-update(Update $u) {
   my $suffix = sprintf '%11s %s', $label, $u.timer;
   # dots fill the gap as time passes; once they reach the fixed column where
   # the timer sits, padding takes over so the timer never moves
-  my constant $right-margin = 2;
+  my constant $right-margin = 20;
   my $avail = (($!cols || 80) - ($!col - 1) - $right-margin - $prefix.chars - 1 - $suffix.chars) max 0;
-  my $ndots = (1 + $u.elapsed.Int) min $avail;
   my $done = $u.finished ?? 'done' !! '';
+  # dots + done + padding must sum to exactly $avail, so leave room for "done"
+  my $ndots = ((1 + $u.elapsed.Int) min ($avail - $done.chars)) max 0;
   ($u.finished ?? t.color($!finished-color) !! t.color($!running-color))
   ~ $prefix ~ ('.' x $ndots) ~ $done ~ (' ' x ($avail - $ndots - $done.chars)) ~ " $suffix"
   ~ t.text-reset;
@@ -240,8 +241,12 @@ method run(Supply $events) {
   # in a react.
   my $chan = Channel.new;
   start {
+    debug "starting channel";
     $events.tap:
-      { $chan.send($_) },
+      {
+        debug "channel received $_";
+        $chan.send($_)
+      },
       done => { $chan.close },
       quit => { $chan.fail($_) }
   }

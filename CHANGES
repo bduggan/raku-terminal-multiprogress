@@ -1,3 +1,8 @@
+0.0.4 2026-08-26
+  - add new fancier bars
+  - pipe examples
+  - fix alignment, add debugging, fix debug env var
+
 0.0.3 2026-08-16
   - use gifs in docs
 

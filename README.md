@@ -29,7 +29,7 @@ my $events = supply {
 $prog.run: $events
 ```
 
-![simple progress bars](docs/simple.gif)
+![simple progress bars](https://raw.githubusercontent.com/bduggan/raku-terminal-multiprogress/main/docs/simple.gif)
 
 Output will be status lines that are updated as time goes by. Updates happen every second, starting with
 
@@ -48,7 +48,7 @@ See below for how to control the output format, and for more interesting example
     --------------🐇....................................🏁
     -----🐢.............................................🏁
 
-![race](docs/race.gif)
+![race](https://raw.githubusercontent.com/bduggan/raku-terminal-multiprogress/main/docs/race.gif)
 
 And how long will it take for all these exciting modules to be installed? [eg/installer.raku](https://github.com/bduggan/raku-terminal-multiprogress/blob/main/eg/installer.raku) has a set of multiple events in progress being monitored in a fixed scroll region, with completed events being pruned.
 
@@ -63,11 +63,11 @@ And how long will it take for all these exciting modules to be installed? [eg/in
     ⠴ 00:00:00 dedent
     (109) completed: 3   running: 8
 
-![race](docs/installer.gif)
+![race](https://raw.githubusercontent.com/bduggan/raku-terminal-multiprogress/main/docs/installer.gif)
 
 And let us watch this amazing LLM in action doing so many unfathomable things
 
-![llm](docs/llm.gif)
+![llm](https://raw.githubusercontent.com/bduggan/raku-terminal-multiprogress/main/docs/llm.gif)
 
 DESCRIPTION
 ===========

@@ -1,0 +1,50 @@
+#!raku
+
+use Test;
+use lib $?FILE.IO.parent.add('lib');
+use Terminal::MultiProgress;
+use TestOut;
+
+plan 5;
+
+# default renderer's odometer: dots (⡀) carry into small blocks (▁) and then
+# big blocks (█) as elapsed time (scaled by speed) grows.
+my $events = supply {
+  emit %( :id<job>, :status<start>, timestamp => now );
+  sleep 0.6;
+  emit %( :id<job>, :status<finish>, timestamp => now );
+}
+my $out = capture-run {
+  Terminal::MultiProgress.new(
+    :!show-title, :!show-frame, :!show-summary,
+    tick => 0.02, speed => 2000,
+  ).run: $events;
+}
+
+ok $out.defined, 'run() exits once the events supply is done';
+like $out, /'job started' <[⡀▁█]>+/, 'a running entry shows odometer glyphs';
+like $out, /'job started' <[⡀▁█]>+ \s* 'done'/,
+  'a finished entry shows a full glyph run followed by "done"';
+
+# every drawn frame for 'job' as a (big, small, dot) glyph count
+my @frames = $out.match(/ 'job started' (<[⡀▁█]>*) /, :g).map: -> $m {
+  my $s = $m[0].Str;
+  ($s.comb('█').elems, $s.comb('▁').elems, $s.comb('⡀').elems);
+}
+
+cmp-ok @frames.elems, '>', 1, 'multiple frames were captured to compare';
+
+# the odometer must never appear to reset: (big, small) can only grow, and
+# dots can only shrink when (big, small) just grew (a real carry) -- this is
+# a regression test for a bug where the glyph run would visibly empty out
+# and refill once before the first real carry happened.
+my $monotonic = True;
+for 1 ..^ @frames.elems -> $i {
+  my ($pbig, $psmall, $pdots) = @frames[$i - 1];
+  my ($big,  $small,  $dots)  = @frames[$i];
+  my $grew = $big > $pbig || ($big == $pbig && $small > $psmall);
+  $monotonic = False unless $grew || $dots >= $pdots;
+}
+ok $monotonic, 'the glyph run never regresses without a real carry';
+
+done-testing;

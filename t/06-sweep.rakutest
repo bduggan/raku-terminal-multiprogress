@@ -1,0 +1,80 @@
+#!raku
+
+use Test;
+
+# Unit test for the positional "odometer" the default renderer draws once the
+# dots fill the width. This reimplements the pure glyph logic from
+# Terminal::MultiProgress's !default-update so the progression can be asserted
+# directly; keep the two in sync.
+#
+# W = row width. Layout is high-order left -> low-order right, left-packed with
+# the rest padded:
+#   [ █ big blocks ][ ▁ small blocks ][ run of single dots ⡀ ][ spaces ]
+# Single dots grow one per tick, filling the free columns. When they run out of
+# space the run collapses into one ▁ and the dots restart at one. When small
+# blocks fill the free space they carry into one █; big blocks eat the row from
+# the left. When the row is all █ the counter freezes and pulses a trailing ∞/*.
+
+my ($dot, $small, $big) = '⡀', '▁', '█';
+
+sub glyphs($width, $count) {
+  my ($big-n, $small-n, $dots) = 0, 0, 0;
+  my $frozen = False;
+  for 1 .. $count {
+    $dots++;
+    if $dots > $width - $big-n - $small-n {
+      $small-n++; $dots = 1;
+      if $small-n > $width - $big-n - 1 {
+        $big-n++; $small-n = 0; $dots = 1;
+        if $big-n >= $width { $frozen = True; last }
+      }
+    }
+  }
+  if $frozen {
+    my $pulse = ($count %% 2) ?? '∞' !! '*';
+    return ($big x (($width - 2) max 0)) ~ " $pulse";
+  }
+  my $pad = $width - $big-n - $small-n - $dots;
+  ($big x $big-n) ~ ($small x $small-n) ~ ($dot x $dots) ~ (' ' x $pad);
+}
+
+plan 20;
+
+my $w = 6;
+
+# --- single dots grow one per tick, left to right ---
+is glyphs($w, 0), '      ', 'tick 0: empty';
+is glyphs($w, 1), '⡀     ', 'tick 1: one dot';
+is glyphs($w, 2), '⡀⡀    ', 'tick 2: two dots';
+is glyphs($w, 3), '⡀⡀⡀   ', 'tick 3: three dots';
+is glyphs($w, $w), '⡀⡀⡀⡀⡀⡀', 'tick W: dots fill the whole row';
+
+# --- run out of dot space -> one ▁ block, restart dots at one ---
+is glyphs($w, $w + 1), '▁⡀    ', 'tick W+1: dots collapse to ▁, one dot again';
+is glyphs($w, $w + 2), '▁⡀⡀   ', 'tick W+2: dots grow again beside the block';
+
+# --- ▁ blocks accumulate as each dot run fills up ---
+is glyphs($w, 7),  '▁⡀    ', 'tick 7: first block';
+is glyphs($w, 12), '▁▁⡀   ', 'tick 12: second block';
+is glyphs($w, 40), '██⡀⡀⡀⡀', 'tick 40: two big blocks + four dots';
+is glyphs($w, 41), '██▁⡀  ', 'tick 41: dots carried into a small block';
+is glyphs($w, 47), '███⡀  ', 'tick 47: three big blocks';
+
+# --- big blocks eat the row from the left ---
+is glyphs($w, 56), '█████⡀', 'tick 56: five big blocks + one dot = full';
+
+# --- whole row of big blocks: freeze + pulse, no wrap ---
+is glyphs($w, 57),     '████ *', 'tick 57: row all █ -> freeze, pulse tail';
+is glyphs($w, 58),     '████ ∞', 'next tick: tail pulses to ∞';
+is glyphs($w, 59),     '████ *', 'and back to *';
+is glyphs($w, 57 * 30), '████ ∞', 'stays frozen however far past the top we go';
+
+# --- width is the base ---
+is glyphs(4, 4), '⡀⡀⡀⡀', 'W=4: four dots fill the row';
+is glyphs(4, 5), '▁⡀  ', 'W=4: fifth tick carries into a block';
+
+# --- every frame is exactly W columns wide ---
+ok (0, 1, 6, 7, 40, 56, 57, 58, 9999).map({ glyphs($w, $_).chars == $w }).all,
+  'every frame is exactly W columns wide';
+
+done-testing;

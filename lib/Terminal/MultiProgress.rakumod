@@ -11,11 +11,26 @@ use Terminal::MultiProgress::Update;
 constant Event = Terminal::MultiProgress::Event;
 constant Update = Terminal::MultiProgress::Update;
 
+# $s.chars minus ANSI SGR/CSI codes, for comparing on-screen width across redraws
+my constant $ESC = chr(0x1b);
+my sub visible-chars(Str $s) {
+  $s.subst(/ $ESC '[' <[0..9;]>* <[A..Za..z]> /, '', :g).chars;
+}
+
 has Str  $.title     = 'progress';
 has Int  $.rule-width  = 40;
 has Real $.tick    = 1;
+has Real $.speed   = 1;  # multiplies elapsed time for the default odometer display
 has Str  $.running-color  = '#e2ca76'; # sand (xkcd)
 has Str  $.finished-color = '#789b73'; # grey green (xkcd)
+# odometer glyphs: ⡀ dots carry into a ▁ block, ▁ blocks carry into a █ block;
+# $.head marks the growing tip while running (the trailer). All configurable, but
+# each must be a single character -- the width and carry math assume one column.
+subset Glyph of Str where *.chars == 1;
+has Glyph $.dot   = '⡀';
+has Glyph $.small = '▁';
+has Glyph $.big   = '█';
+has Glyph $.head  = '▷';
 has Bool $.trap-sigint = True;
 has Bool $.full-screen = False;
 has Bool $.show-title  = False;
@@ -93,14 +108,89 @@ method !default-update(Update $u) {
   my constant $right-margin = 20;
   my $avail = (($!cols || 80) - ($!col - 1) - $right-margin - $prefix.chars - 1 - $suffix.chars) max 0;
   my $done = $u.finished ?? 'done' !! '';
-  # dots + done + padding must sum to exactly $avail, so leave room for "done"
-  my $max-dots = ($avail - $done.chars) max 0;
-  my $ndots = ((1 + ($u.elapsed / $!tick).Int) min $max-dots) max 0;
+  # Always reserve the "done" slot so the dots span the same width whether
+  # running or finished -- otherwise running lines would show 4 more dots and
+  # finished "done"s wouldn't line up. dots + doneslot + padding == $avail.
+  my constant $done-width = 4;              # chars in "done"
+  my $max-dots = ($avail - $done-width) max 0;
+  # while running, the dots grow with elapsed time; when finished we render the
+  # full-width run of glyphs (as if elapsed had reached the far edge) and append
+  # "done" after them, so finished lines read e.g. "⡀⡀⡀…⡀done"
+  my $ndots = $u.finished
+    ?? $max-dots
+    !! (((1 + ($u.elapsed * $!speed).Int) min $max-dots) max 0);
   my $base  = $u.finished ?? t.color($!finished-color) !! t.color($!running-color);
-  my $dots  = '.' x $ndots;
-  $base
-  ~ $prefix ~ $dots ~ $done ~ (' ' x ($avail - $ndots - $done.chars)) ~ " $suffix"
-  ~ t.text-reset;
+
+  # odometer: dots carry into a small block, small blocks carry into a big block,
+  # left-packed [██][▁▁][⡀⡀]; frozen (all big) pulses ∞ / *.  Glyphs configurable.
+  my $dot   = $!dot;
+  my $small = $!small;
+  my $big   = $!big;
+  my $head  = $!head;  # marks the growing tip while running
+
+  # swap the last filled char for $head; only used for the colored/running variant
+  my sub capped($plain, $filled) {
+    return $plain unless $filled > 0;
+    $plain.substr(0, $filled - 1) ~ $head ~ $plain.substr($filled);
+  }
+
+  my sub T($n) { $n * ($n + 1) / 2 }              # triangular
+  my sub S($n) { $n * ($n + 1) * ($n + 2) / 6 }   # tetrahedral, = sum of T(1..n)
+
+  # smallest n <= $width with S(n) >= target: scan down from $width for the
+  # first n whose predecessor drops below target. $width is just a terminal
+  # column count -- cheap to scan, no float math.
+  my sub inv-S($target, $width) {
+    return 0 if $target <= 0;
+    ($width, $width - 1 ... 0).first: { S($_ - 1) < $target }
+  }
+  # smallest n with T(n) >= target: T(n) >= target solves to
+  # n >= (sqrt(8*target + 1) - 1) / 2, so just take the ceiling
+  my sub inv-T($target) {
+    return 0 if $target <= 0;
+    (((8 * $target + 1).sqrt - 1) / 2).ceiling;
+  }
+
+  # (big, small, dots) after $count ticks on a row $max-dots wide, closed form
+  my sub state($count) {
+    my $big-n = $max-dots - inv-S(S($max-dots) - $count + 1, $max-dots);
+    return $max-dots, 0, 0 if $big-n >= $max-dots;
+    my $wb      = $max-dots - $big-n;
+    my $r       = $count - (1 + S($max-dots) - S($wb));
+    my $small-n = $wb - inv-T(T($wb) - $r);
+    my $dots    = $r - (T($wb) - T($wb - $small-n)) + 1;
+    $big-n, $small-n, $dots;
+  }
+
+  my sub glyphs($count) {
+    return '', '' unless $ndots > 0;
+    unless $ndots >= $max-dots {
+      return ($dot x $ndots), ($base ~ capped($dot x $ndots, $ndots));
+    }
+    my ($big-n, $small-n, $dots) = state($count);
+    if $big-n >= $max-dots {
+      my $pulse  = ($count %% 2) ?? '∞' !! '*';
+      my $blocks = $big x (($max-dots - 2) max 0);
+      return ($blocks ~ " $pulse", $base ~ $blocks ~ " $pulse");
+    }
+    my $pad   = $max-dots - $big-n - $small-n - $dots;
+    my $plain = ($big x $big-n) ~ ($small x $small-n) ~ ($dot x $dots) ~ (' ' x $pad);
+    ($plain, $base ~ capped($plain, $big-n + $small-n + $dots));
+  }
+
+  my $count = (1 + ($u.elapsed * $!speed).Int) max 0;
+  my $dots;
+  if $u.finished {
+    my ($plain, $) = glyphs($count);
+    $dots = $base ~ $plain ~ $done
+          ~ (' ' x ($avail - $ndots - $done.chars)) ~ " $suffix";
+  }
+  else {
+    my ($, $colored) = glyphs($count);
+    $dots = $colored
+          ~ (' ' x ($avail - $ndots)) ~ " $suffix";
+  }
+  $base ~ $prefix ~ $dots ~ t.text-reset;
 }
 
 method !redraw($id) {
@@ -112,8 +202,9 @@ method !redraw($id) {
     finished => $fin,
     last     => (%!last{$id} // '');
   my $line = ((&!update ?? &!update($u) !! self!default-update($u)) // '').Str;
+  my $shrank = visible-chars($line) < visible-chars($u.last);  # only erase if it got shorter
   %!last{$id} = $line;
-  self!put: $row, $line, t.erase-to-end-of-line;
+  self!put: $row, $line, ($shrank ?? t.erase-to-end-of-line !! '');
 }
 
 method !draw-summary() {
